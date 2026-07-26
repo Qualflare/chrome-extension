@@ -1,0 +1,13 @@
+# macOS
+.DS_Store
+
+# Editor
+.vscode/
+.idea/
+
+# Node (only if a build/tooling is ever added — none today)
+node_modules/
+
+# Packaged builds
+*.zip
+dist/

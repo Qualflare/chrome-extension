@@ -1,0 +1,124 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      :root {
+        color-scheme: light dark;
+        --violet: #8b5cf6;
+        --glow: rgba(150, 110, 255, 0.18);
+        --fg: #1f2328;
+        --muted: #59636e;
+        --bg: #ffffff;
+        --subtle: #f6f8fa;
+        --border: #d0d7de;
+        --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root { --fg: #e6edf3; --muted: #8b949e; --bg: #0d1117; --subtle: #161b22; --border: #30363d; }
+      }
+      * { box-sizing: border-box; }
+      body {
+        width: 340px; margin: 0; padding: 16px;
+        font: 13px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+        color: var(--fg); background: var(--bg);
+      }
+
+      /* header */
+      .head { display: flex; align-items: center; gap: 9px; margin-bottom: 3px; }
+      .tile {
+        width: 24px; height: 24px; flex: none; display: flex; align-items: center; justify-content: center;
+        border-radius: 7px; background: var(--glow); box-shadow: 0 0 14px var(--glow);
+      }
+      .tile svg { width: 15px; height: 15px; display: block; }
+      .wordmark { font-weight: 600; font-size: 14px; letter-spacing: -0.01em; }
+      .sub { margin: 0 0 14px; color: var(--muted); font-size: 12px; }
+
+      /* form */
+      .lbl {
+        display: block; font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em;
+        text-transform: uppercase; color: var(--muted); margin: 12px 0 4px;
+      }
+      input[type="text"] {
+        width: 100%; padding: 7px 9px; border: 1px solid var(--border); border-radius: 7px;
+        background: transparent; color: inherit; font: inherit; transition: box-shadow 0.12s, border-color 0.12s;
+      }
+      input[type="text"]::placeholder { color: var(--muted); opacity: 0.7; }
+      input#token, input#slug, input#repo { font-family: var(--mono); font-size: 12px; }
+      input[type="text"]:focus {
+        outline: none; border-color: var(--violet); box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.22);
+      }
+
+      /* segmented mode toggle */
+      .modes {
+        display: flex; margin: 12px 0 4px; padding: 3px; gap: 3px;
+        background: var(--subtle); border: 1px solid var(--border); border-radius: 8px;
+      }
+      .modes label {
+        flex: 1; text-align: center; padding: 5px 0; border-radius: 5px; cursor: pointer;
+        font-size: 12px; color: var(--muted); transition: background 0.12s, color 0.12s;
+      }
+      .modes input { position: absolute; opacity: 0; pointer-events: none; }
+      .modes label:has(input:checked) { background: var(--bg); color: var(--fg); font-weight: 600; box-shadow: 0 1px 2px rgba(0,0,0,0.08); }
+      .modes label:has(input:focus-visible) { outline: 2px solid var(--violet); outline-offset: 1px; }
+
+      button.primary {
+        margin-top: 12px; width: 100%; padding: 8px; border: 0; border-radius: 7px;
+        background: var(--violet); color: #fff; font: inherit; font-weight: 600; cursor: pointer;
+        transition: filter 0.12s;
+      }
+      button.primary:hover { filter: brightness(1.08); }
+      button.primary:focus-visible { outline: 2px solid var(--violet); outline-offset: 2px; }
+      .hint { font-size: 11px; color: var(--muted); margin: 9px 0 0; }
+      .hint a { color: var(--violet); text-decoration: none; }
+      .hint a:hover { text-decoration: underline; }
+
+      /* linked repos */
+      h2 { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin: 18px 0 4px; font-weight: 600; }
+      ul { list-style: none; margin: 0; padding: 0; }
+      li { display: flex; align-items: center; gap: 8px; padding: 8px 0; border-top: 1px solid var(--border); }
+      li .repo { font-family: var(--mono); font-size: 12px; font-weight: 500; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      li .badge {
+        font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.08em; text-transform: uppercase;
+        padding: 2px 6px; border-radius: 999px; background: var(--glow); color: var(--violet);
+      }
+      li .del { background: none; border: 0; color: var(--muted); font: inherit; font-size: 11px; cursor: pointer; padding: 2px 4px; }
+      li .del:hover { color: #cf222e; }
+      .empty { color: var(--muted); font-size: 12px; padding: 8px 0; }
+    </style>
+  </head>
+  <body>
+    <div class="head">
+      <span class="tile"><svg viewBox="0 0 545 545" fill="none" aria-hidden="true"><path fill="#795ECB" d="M251 506.05C251 507.98 249.37 506.8 244.5 501.32C221.7 475.69 207.95 444.01 204.97 410.23C202.54 382.59 209.5 355.57 225.01 332.43C233.27 320.12 251.87 302.29 270.38 288.95C279.11 282.65 293.1 272.51 301.47 266.41C309.84 260.3 317.16 255.02 317.74 254.66C319.4 253.63 317.37 261.2 312.96 272.46C304.52 293.99 292.27 312.22 268.89 338C246.98 362.15 237 380.16 231.47 405.5C229.28 415.53 228.5 436.7 229.92 447.5C232.08 463.9 239.32 485.18 247.49 499.12C249.42 502.41 251 505.53 251 506.05Z"/><path fill="#4134AB" d="M251 506.05C251 505.53 249.42 502.41 247.49 499.12C245.46 495.66 243.49 491.75 241.65 487.58C244.91 494.82 248.64 501.55 252.66 507.25C254.49 509.87 256 512.45 256 513C256 514.63 252.98 514.13 244.31 511.07C201.68 496.04 164.8 463.4 144.22 422.49C136.69 407.52 134.4 401.53 130.58 386.73C126.08 369.32 125 360.28 125 339.88C125 303.97 134.38 273.04 154.1 243.88C160.7 234.12 168.13 225.29 194 196.47C222.52 164.7 237.41 137.97 244.16 106.41C246.21 96.83 246.49 92.93 246.41 74.5C246.33 55.95 246.03 52.19 243.82 42.25C242.44 36.06 241.5 31 241.73 31C243.27 31 256.6 41.71 264.95 49.64C293.25 76.56 312.2 110.55 321.45 151.04C325.18 167.35 326.41 179.48 326.35 199.5C326.29 219.63 324.56 234.34 320.58 248.5C319.81 251.25 318.64 255.52 318 258C317.23 260.93 315.94 264.7 314.37 268.78C317.79 259.6 319.21 253.75 317.74 254.66C317.16 255.02 309.84 260.3 301.47 266.41C293.1 272.51 279.11 282.65 270.38 288.95C251.87 302.29 233.27 320.12 225.01 332.43C209.5 355.57 202.54 382.59 204.97 410.23C207.95 444.01 221.7 475.69 244.5 501.32C249.37 506.8 251 507.98 251 506.05ZM298.82 300.14C291.61 311.57 282.75 322.71 268.89 338C281.88 323.67 291.44 311.67 298.82 300.14ZM230.71 452.54C230.4 450.82 230.13 449.13 229.92 447.5C229.37 443.35 229.15 437.68 229.21 431.7C229.15 437.68 229.38 443.35 229.93 447.5C230.15 449.16 230.41 450.84 230.71 452.54Z"/><path fill="#B8A1FF" d="M230.71 452.54C230.41 450.84 230.15 449.16 229.93 447.5C229.38 443.35 229.15 437.68 229.21 431.7C229.3 422.09 230.12 411.68 231.47 405.5C237 380.16 246.98 362.15 268.89 338C281.88 323.67 291.44 311.67 298.82 300.14C304.71 290.93 309.21 282.02 312.96 272.46C313.46 271.18 313.93 269.95 314.37 268.78C315.95 264.69 317.23 260.93 318 258C318.64 255.52 318.73 254.75 319.5 252C319.78 251.01 320.25 249.5 320.5 248.5C319.87 252.16 320.44 251.77 320.64 251.97C320.93 252.26 326.21 247.33 332.36 241C348.81 224.09 357.1 209.34 360.93 190.13C363.71 176.23 364.31 166.72 363.03 156.63C362.42 151.75 362.19 147.48 362.53 147.14C363.84 145.82 388.7 172.59 394.9 182C406.44 199.52 415.06 220.55 418.68 240C420.83 251.53 421.1 279.36 419.15 288.5C415.97 303.42 408.8 320.99 401.31 332.19C385.64 355.61 375.44 364.69 319.57 404.92C291.23 425.32 279.24 437.49 269.97 455.21C261.69 471.06 259.03 481.31 258.3 500.25C257.81 512.97 257.51 514.99 256.11 514.91C255.23 514.86 250.35 513.32 245.29 511.49C243.33 510.78 241.38 510.04 239.45 509.27C241.06 509.9 242.68 510.5 244.31 511.07C252.98 514.13 256 514.63 256 513C256 512.45 254.49 509.87 252.66 507.25C248.64 501.55 244.91 494.82 241.65 487.58C236.78 476.6 232.75 463.79 230.71 452.54ZM144.22 422.49C155.17 444.25 170.73 463.67 189.31 479.34C167.98 461.48 150.98 438.97 139.81 413.45C141.06 416.14 142.51 419.08 144.22 422.49Z"/></svg></span>
+      <span class="wordmark">Qualflare</span>
+    </div>
+    <p class="sub">Test health on your GitHub pull requests.</p>
+
+    <form id="add">
+      <label class="lbl" for="repo">GitHub repo</label>
+      <input id="repo" name="repo" type="text" placeholder="owner/name" autocomplete="off" required />
+
+      <div class="modes">
+        <label><input type="radio" name="mode" value="token" checked /> Private (token)</label>
+        <label><input type="radio" name="mode" value="public" /> Public (slug)</label>
+      </div>
+
+      <div id="tokenRow">
+        <label class="lbl" for="token">Qualflare API token</label>
+        <input id="token" name="token" type="text" placeholder="qf_…" autocomplete="off" />
+      </div>
+      <div id="slugRow" hidden>
+        <label class="lbl" for="slug">Public project slug</label>
+        <input id="slug" name="slug" type="text" placeholder="my-project" autocomplete="off" />
+      </div>
+
+      <button type="submit" class="primary">Link repo</button>
+      <p class="hint">Get a token in <a href="https://app.qualflare.com" target="_blank" rel="noopener">app.qualflare.com</a> → Project → Settings → Access Tokens.</p>
+    </form>
+
+    <h2>Linked repos</h2>
+    <ul id="list"><li class="empty">No repos linked yet — add one above.</li></ul>
+
+    <script src="popup.js"></script>
+  </body>
+</html>

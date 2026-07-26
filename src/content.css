@@ -1,0 +1,196 @@
+/* Qualflare PR overlay — "Native precision with a Qualflare signal".
+   Adapts to the viewer's GitHub theme (Primer variables, light + dark) while
+   carrying Qualflare's identity: the flame mark, a violet signal-edge, and
+   monospace/tabular data. Everything is qf-prefixed and reset-scoped so GitHub's
+   global CSS can't bleed in and vice-versa. */
+
+.qf-panel {
+  /* brand + status + neutral tokens (neutrals adapt to GitHub's theme) */
+  --qf-violet: #8b5cf6;
+  --qf-glow: rgba(150, 110, 255, 0.18);
+  --qf-fg: var(--fgColor-default, var(--color-fg-default, #1f2328));
+  --qf-muted: var(--fgColor-muted, var(--color-fg-muted, #59636e));
+  --qf-bg: var(--bgColor-default, var(--color-canvas-default, #fff));
+  --qf-subtle: var(--bgColor-muted, var(--color-canvas-subtle, #f6f8fa));
+  --qf-border: var(--borderColor-default, var(--color-border-default, #d0d7de));
+  --qf-border-muted: var(--borderColor-muted, var(--color-border-muted, #d8dee4));
+  --qf-success: var(--fgColor-success, var(--color-success-fg, #1a7f37));
+  --qf-danger: var(--fgColor-danger, var(--color-danger-fg, #cf222e));
+  --qf-attention: var(--fgColor-attention, var(--color-attention-fg, #9a6700));
+  --qf-accent: var(--fgColor-accent, var(--color-accent-fg, #0969da));
+  --qf-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--qf-fg);
+  background: var(--qf-bg);
+  border: 1px solid var(--qf-border);
+  border-top: 2px solid var(--qf-violet); /* the "signal" edge */
+  border-radius: 8px;
+  margin: 8px 0 16px;
+  box-shadow: 0 1px 2px rgba(31, 35, 40, 0.06);
+}
+/* defensive reset — GitHub's global styles must not leak into the panel */
+.qf-panel,
+.qf-panel * {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ── header ───────────────────────────────────────────────── */
+.qf-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 12px;
+}
+.qf-tile {
+  width: 20px;
+  height: 20px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  background: var(--qf-glow);
+  box-shadow: 0 0 12px var(--qf-glow);
+}
+.qf-tile svg { width: 13px; height: 13px; display: block; }
+.qf-wordmark {
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: -0.01em;
+}
+.qf-head__spacer { flex: 1; }
+
+/* verdict — the focal point */
+.qf-verdict {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-weight: 600;
+  font-size: 12px;
+  padding: 2px 9px 2px 7px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+}
+.qf-verdict svg { width: 12px; height: 12px; }
+.qf-verdict--passed { color: var(--qf-success); background: color-mix(in srgb, var(--qf-success) 12%, transparent); }
+.qf-verdict--failed { color: var(--qf-danger); background: color-mix(in srgb, var(--qf-danger) 12%, transparent); }
+.qf-verdict--flaky { color: var(--qf-attention); background: color-mix(in srgb, var(--qf-attention) 14%, transparent); }
+.qf-verdict--skipped,
+.qf-verdict--pending { color: var(--qf-muted); background: color-mix(in srgb, var(--qf-muted) 12%, transparent); }
+
+/* ── body ─────────────────────────────────────────────────── */
+.qf-body { padding: 0 12px 12px; }
+
+/* meter */
+.qf-meter { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.qf-meter__track {
+  flex: 1;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--qf-subtle);
+  box-shadow: inset 0 0 0 1px rgba(31, 35, 40, 0.04);
+  overflow: hidden;
+}
+.qf-meter__fill {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+.qf-seg { height: 100%; flex: none; }
+.qf-seg--pass { background: var(--qf-success); }
+.qf-seg--fail { background: var(--qf-danger); }
+.qf-seg--skip { background: var(--qf-muted); opacity: 0.55; }
+.qf-meter__pct {
+  font-family: var(--qf-mono);
+  font-size: 12px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--qf-fg);
+}
+
+/* metrics — mono tabular numerals over tracked mono labels */
+.qf-metrics { display: flex; gap: 22px; }
+.qf-metric { display: flex; flex-direction: column; gap: 1px; }
+.qf-metric__val {
+  font-family: var(--qf-mono);
+  font-size: 17px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+  color: var(--qf-fg);
+}
+.qf-metric__lbl {
+  font-family: var(--qf-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--qf-muted);
+}
+.qf-metric--fail .qf-metric__val { color: var(--qf-danger); }
+.qf-metric--flaky .qf-metric__val { color: var(--qf-attention); }
+
+/* AI "why" — the signature accent */
+.qf-ai {
+  margin-top: 12px;
+  padding-left: 10px;
+  border-left: 2px solid var(--qf-violet);
+  color: var(--qf-muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+.qf-ai__tag {
+  font-family: var(--qf-mono);
+  font-weight: 600;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--qf-violet);
+  margin-right: 2px;
+}
+
+/* footer */
+.qf-foot {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--qf-border-muted);
+}
+.qf-ref {
+  font-family: var(--qf-mono);
+  font-size: 11px;
+  color: var(--qf-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.qf-foot__spacer { flex: 1; }
+.qf-link {
+  color: var(--qf-accent);
+  text-decoration: none;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: opacity 0.12s ease;
+}
+.qf-link:hover { text-decoration: underline; }
+.qf-link:focus-visible { outline: 2px solid var(--qf-violet); outline-offset: 2px; border-radius: 3px; }
+
+/* state messages (unconfigured / no-data / …) */
+.qf-msg { color: var(--qf-muted); font-size: 12px; }
+.qf-msg code {
+  font-family: var(--qf-mono);
+  font-size: 11px;
+  background: color-mix(in srgb, var(--qf-muted) 12%, transparent);
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+.qf-msg a { color: var(--qf-accent); text-decoration: none; font-weight: 500; }
+.qf-msg a:hover { text-decoration: underline; }
+
+/* No entrance animation — the craft is in the static composition; hover
+   transitions (on links) are the only motion, and they never hide content. */
