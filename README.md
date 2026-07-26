@@ -4,11 +4,6 @@ A Chrome (Manifest V3) extension that shows a repo's **Qualflare test health inl
 pull requests** — status, pass/fail counts, **flaky count**, and the AI summary — with a link to
 the full launch. It reads the existing Qualflare public API; nothing about the product changes.
 
-> **Why this exists (not a backlink trick).** A store listing's outbound link is almost certainly
-> `nofollow`, so this is built as a genuine **product-engagement** surface (activate/retain users
-> where they work — GitHub PRs), not for SEO. The link value that matters is earned organically
-> (reviews, "best QA extensions" mentions), not the store link itself.
-
 ## Load it (unpacked, for testing)
 
 1. Open `chrome://extensions`.
@@ -30,18 +25,23 @@ the full launch. It reads the existing Qualflare public API; nothing about the p
 - Matching is **branch-based**: `GET /api/v1/launches?q=<branch>` (or `/p/<slug>/launches` for
   public projects), then the most-recent commit's launches for that branch are aggregated. (Branch,
   not head SHA, because GitHub Actions stamps launches with the *merge* commit, not the PR head.)
-- Health math is ported from `app-ui/src/components/public/metrics.ts` (`src/lib/metrics.js`).
+- Health math mirrors Qualflare's public metrics logic (`src/lib/metrics.js`).
 
-## Known limitations (MVP)
+## Known limitations
 
-- **Manual token per project** (clunky) — an OAuth flow is a Phase-2 item.
-- **No numeric risk score** — that field is internal to the Qualflare API and not on the public
-  response yet (Phase 2: expose `riskLevel` / `healthScore`). MVP shows counts + flaky + AI text.
-- **Icons not included** — add `icons/` (16/48/128 px) before publishing to the Web Store.
-- Vanilla JS (no build step) for fast iteration; migrate to WXT + React if the UI grows.
+- **Manual token per project** — OAuth provisioning is planned.
+- **Branch-based matching** — per-commit matching is planned.
+- Counts, flaky count, and the AI summary are shown today; a numeric risk badge is planned.
+- Vanilla JS (no build step) for fast iteration; may migrate to WXT + React if the UI grows.
 
-## Roadmap (Phase 2, small `api-service` changes)
+## Roadmap
 
-- `?commit=<sha>` filter + index on `launches.commit` → precise per-commit lookup.
-- Surface the AI risk score on the public launch response → risk badge in the panel.
-- OAuth token provisioning; project-level failure-clusters widget.
+- Per-commit matching (currently branch-based).
+- A risk badge when the API surfaces one.
+- OAuth token provisioning instead of manual tokens.
+
+## Privacy
+
+See [PRIVACY.md](./PRIVACY.md). The extension stores your repo links and token locally
+(`chrome.storage.sync`) and talks only to `api.qualflare.com` — no tracking, analytics, or
+third-party servers.
